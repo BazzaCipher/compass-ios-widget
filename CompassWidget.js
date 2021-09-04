@@ -30,8 +30,8 @@ let widgetConfig = {
 	//	Compass.enums.ActivityType.Exam,
 	//	Compass.enums.ActivityType.OnCall
 	],
-	// the maximum gap between two periods before they are .
-	doubleThresholdMinutes: 10,
+	// the maximum gap between two periods with the same name before they are counted as separate periods
+	doubleThresholdMinutes: 15,
 	// colour and name customisations for events with a specific title
 	// an typical highschool colour scheme is included to get you started
 	customisations: {
