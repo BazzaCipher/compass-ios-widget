@@ -30,10 +30,9 @@ let widgetConfig = {
 		Compass.enums.ActivityType.Exam,
 		Compass.enums.ActivityType.OnCall
 	],
-	// the maximum gap between two classes with the same name before they are not grouped together
+	// the maximum gap between two classes with the same name before they are not grouped together (a double)
 	doubleThresholdMinutes: 15,
 	// colour and name customisations for events with a specific title
-	// some basic templates have been set up for a typical highschool timetable
 	customisations: {
 		templates: {
 			"english": {
@@ -113,15 +112,15 @@ let widgetConfig = {
 				color: "#ffff00",
 				accentColor: "#ffff00",
 				name: "Technology"
-			},
+			}
 		},
 		mappings: {
 			"ENG":		"english",
 			"SCI":		"science",
 		}
 	},
-	// sets the date manually instead of using the current date
-//	debugUseDate: '2021-09-07'
+	// uncomment this line to set the date manually instead of using the current date. for development purposes
+	//debugUseDate: '2021-09-07'
 }
 
 // End of configuration
@@ -318,9 +317,11 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 
 		let locationSessionStack = lineContent.addStack()
 		locationSessionStack.layoutVertically()
+
 		locationSessionStack.spacing = 5
 
 		let locationSessions = i.sessions;
+
 		if (
 			locationSessions.length > 1 &&
 			locationSessions.every(
@@ -359,10 +360,11 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		}
 
 		locationSessionStack.addSpacer(3)
+
 		previousActivity = i
 		lineCount++;
 
-		// add a little padding below the line if it's not the last line
+		// add a little padding below the line
 		if (lineCount !== activities.length) {
 			widget.addSpacer(5)
 		}
