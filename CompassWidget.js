@@ -19,85 +19,109 @@ let widgetConfig = {
 	// which types of events to show
 	showEventTypes: [
 		Compass.enums.ActivityType.StandardClass,
-	//   Compass.enums.ActivityType.Event,
-	//	Compass.enums.ActivityType.Meeting,
-	//	Compass.enums.ActivityType.Assembly,
-	//	Compass.enums.ActivityType.GenericActivity,
+		Compass.enums.ActivityType.Event,
+		Compass.enums.ActivityType.Meeting,
+		Compass.enums.ActivityType.Assembly,
+		Compass.enums.ActivityType.GenericActivity,
 	//	Compass.enums.ActivityType.CalendarItem,
-	//	Compass.enums.ActivityType.GenericGroup,
-	//	Compass.enums.ActivityType.ProfessionalDevelopment,
-	//	Compass.enums.ActivityType.LearningTask,
-	//	Compass.enums.ActivityType.Exam,
-	//	Compass.enums.ActivityType.OnCall
+		Compass.enums.ActivityType.GenericGroup,
+		Compass.enums.ActivityType.ProfessionalDevelopment,
+		Compass.enums.ActivityType.LearningTask,
+		Compass.enums.ActivityType.Exam,
+		Compass.enums.ActivityType.OnCall
 	],
-	// the maximum gap between two periods with the same name before they are counted as separate periods
+	// the maximum gap between two classes with the same name before they are not grouped together
 	doubleThresholdMinutes: 15,
 	// colour and name customisations for events with a specific title
-	// an typical highschool colour scheme is included to get you started
+	// some basic templates have been set up for a typical highschool timetable
 	customisations: {
-		"english": {
-			backgroundColor: "#ff9700",
-			color: "#000000",
-			accentColor: "#000000",
-			name: "English"
+		templates: {
+			"english": {
+				backgroundColor: "#ff9700",
+				color: "#000000",
+				accentColor: "#000000",
+				name: "English"
+			},
+			"geography": {
+				backgroundColor: "#973000",
+				color: "#ffff00",
+				accentColor: "#ffff00",
+				name: "Geography"
+			},
+			"tutor": {
+				backgroundColor: "#a8a8a8",
+				color: "#000000",
+				accentColor: "#000000",
+				name: "Tutor"
+			},
+			"sport": {
+				backgroundColor: "#28a10a",
+				color: "#FFF",
+				accentColor: "#FFF",
+				name: "Sport"
+			},
+			"pdhpe": {
+				backgroundColor: "#28a10a",
+				color: "#FFF",
+				accentColor: "#FFF",
+				name: "PDHPE"
+			},
+			"maths": {
+				backgroundColor: "#ff0000",
+				color: "#ffffff",
+				accentColor: "#ffffff",
+				name: "Maths"
+			},
+			"music": {
+				backgroundColor: "#faf859",
+				color: "#000000",
+				accentColor: "#000000",
+				name: "Music"
+			},
+			"stem": {
+				backgroundColor: "#0000ff",
+				color: "#ffff00",
+				accentColor: "#ffff00",
+				name: "STEM"
+			},
+			"science": {
+				backgroundColor: "#17a18f",
+				color: "#000000",
+				accentColor: "#000000",
+				name: "Science"
+			},
+			"religion": {
+				backgroundColor: "#007007",
+				color: "#ffffff",
+				accentColor: "#ffffff",
+				name: "Religion"
+			},
+			"art": {
+				backgroundColor: "#7f0075",
+				color: "#ffffff",
+				accentColor: "#ffffff",
+				name: "Art"
+			},
+			"french": {
+				backgroundColor: "#ffdbb6",
+				color: "#000000",
+				accentColor: "#000000",
+				name: "French"
+			},
+			"technology": {
+				backgroundColor: "#0000ff",
+				color: "#ffff00",
+				accentColor: "#ffff00",
+				name: "Technology"
+			},
 		},
-		"geo": {
-			backgroundColor: "#973000",
-			color: "#ffff00",
-			accentColor: "#ffff00",
-			name: "Geography"
-		},
-		"tutor": {
-			backgroundColor: "#a8a8a8",
-			color: "#000000",
-			accentColor: "#000000",
-			name: "Tutor"
-		},
-		"sport": {
-			backgroundColor: "#28a10a",
-			color: "#FFF",
-			accentColor: "#FFF",
-			name: "Sport"
-		},
-		"pdhpe": {
-			backgroundColor: "#28a10a",
-			color: "#FFF",
-			accentColor: "#FFF",
-			name: "PDHPE"
-		},
-		"maths": {
-			backgroundColor: "#ff0000",
-			color: "#ffffff",
-			accentColor: "#ffffff",
-			name: "Maths"
-		},
-		"music": {
-			backgroundColor: "#faf859",
-			color: "#000000",
-			accentColor: "#000000",
-			name: "Music"
-		},
-		"technology": {
-			backgroundColor: "#0000ff",
-			color: "#ffff00",
-			accentColor: "#ffff00",
-			name: "technology"
-		},
-		"science": {
-			backgroundColor: "#17a18f",
-			color: "#000000",
-			accentColor: "#000000",
-			name: "Science"
-		},
-		"religion": {
-			backgroundColor: "#007007",
-			color: "#ffffff",
-			accentColor: "#ffffff",
-			name: "Religion"
-		},
+		mappings: {
+			"ENG":		"english",
+			"SCI":		"science",
+		}
 	},
-	// uncomment this line to set the date manually instead of using the current date
-//	debugUseDate: '2021-09-02'
+	// sets the date manually instead of using the current date
+//	debugUseDate: '2021-09-07'
 }
 
 // End of configuration
@@ -203,14 +227,17 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
 
 		let eventName = i.name;
-		if (eventName in widgetConfig.customisations) {
-			if ("backgroundColor" in widgetConfig.customisations[eventName]) {					lineBackgroundColor = new Color(widgetConfig.customisations[eventName].backgroundColor)
-			}
-			if ("color" in widgetConfig.customisations[eventName]) {				lineColor = new Color(widgetConfig.customisations[eventName].color)
-			}
-			if ("accentColor" in widgetConfig.customisations[eventName]) {				lineAccentColor = new Color(widgetConfig.customisations[eventName].accentColor)
-			}
-			if ("name" in widgetConfig.customisations[eventName]) {				eventName = widgetConfig.customisations[eventName].name
+		if (eventName in widgetConfig.customisations.mappings) {
+			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]];
+			if (template !== undefined) {
+				if ("backgroundColor" in template) {					lineBackgroundColor = new Color(template.backgroundColor)
+				}
+				if ("color" in template) {						lineColor = new Color(template.color)
+				}
+				if ("accentColor" in template) {					lineAccentColor = new Color(template.accentColor)
+				}
+				if ("name" in template) {						eventName = template.name
+				}
 			}
 		}
 
@@ -291,6 +318,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 
 		let locationSessionStack = lineContent.addStack()
 		locationSessionStack.layoutVertically()
+		locationSessionStack.spacing = 5
 
 		let locationSessions = i.sessions;
 		if (
@@ -305,6 +333,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 			locationSessions = [i.sessions[0]]
 		}
 
+		locationSessionStack.addSpacer(3)
 		for (let session of locationSessions) {
 			if (session.location.current) {
 				let currentSessionLocationStack = locationSessionStack.addStack()
@@ -314,25 +343,26 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 					locationStack.spacing = 6
 					oldLocationStack.backgroundGradient = calculateStrikethroughGradient(lineAccentColor, 10)
 
-					let oldLocation = oldLocationStack.addText(i.sessions[0].location.old)
+					let oldLocation = oldLocationStack.addText(session.location.old)
 					oldLocation.font = locationFont
 					oldLocation.textColor = lineAccentColor
 
-					let eventLocation = locationStack.addText(i.sessions[0].location.current)
+					let eventLocation = locationStack.addText(session.location.current)
 					eventLocation.font = locationFont
 					eventLocation.textColor = lineAccentColor
 				} else {
-					let eventLocation = currentSessionLocationStack.addText(i.sessions[0].location.current)
+					let eventLocation = currentSessionLocationStack.addText(session.location.current)
 					eventLocation.font = locationFont
 					eventLocation.textColor = lineAccentColor
 				}
 			}
 		}
 
+		locationSessionStack.addSpacer(3)
 		previousActivity = i
 		lineCount++;
 
-		// add a little padding below the line
+		// add a little padding below the line if it's not the last line
 		if (lineCount !== activities.length) {
 			widget.addSpacer(5)
 		}
@@ -500,6 +530,13 @@ function parseAndFilterCalendarResponse(response) {
 		return widgetConfig.showEventTypes.includes(i.activityType)
 	});
 
+ 	if (!widgetConfig.showElapsedEvents) {
+ 		results = results.filter(i => {
+ 			let eventFinished = new Date(i.finish) > new Date();
+			return (eventFinished && !widgetConfig.showElapsedEvents);
+ 		});
+	}
+
 	results = results.map(activity => {
 		let titleElements = activity.longTitleWithoutTime.split(" - ")
 
@@ -510,8 +547,15 @@ function parseAndFilterCalendarResponse(response) {
 		let oldTeacherImportIdentifier = null;
 
 		let changedExpr = /<strike>(.*)<\/strike>&nbsp; (.*)/
+
+		// if the event title has a hyphen it will trip up the splitter, so fix it up here
+		if (titleElements[0] !== activity.title) {
+			titleElements.splice(1, 1);
+			titleElements[0] = activity.title;
+		}
+
 		if (activity.activityType === 7) {
-		// an event - can't parse the title
+		// a calendar item - don't parse the title
 			teacherImportIdentifier = null;
 			location = null;
 		} else if (titleElements.length == 3) {
@@ -608,7 +652,7 @@ function calculateStrikethroughGradient(color, height) {
 
 	bg.locations = [
 		0,
-		0.52 - (height / 200) - 0.005, // fix rendering bug on homescreen
+		0.52 - (height / 200) - 0.005, // fix scriptable rendering bug with adjacent gradient locations
 		0.52 - (height / 200),
 		0.52 + (height / 200),
 		0.52 + (height / 200) + 0.005,
