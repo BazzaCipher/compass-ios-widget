@@ -552,6 +552,8 @@ function parseAndFilterCalendarResponse(response) {
 
 		let teacherImportIdentifier
 		let oldTeacherImportIdentifier = null
+		
+		let isCancelled = activity.runningStatus === 0
 
 		let changedExpr = /<strike>(.*)<\/strike>&nbsp (.*)/
 
@@ -595,7 +597,6 @@ function parseAndFilterCalendarResponse(response) {
 			console.log(warn.longTitleWithoutTime)
 		}
 
-		let isCancelled = activity.runningStatus === 0
 		return {
 			name: activity.title,
 			activityId: activity.activityId,
@@ -612,7 +613,7 @@ function parseAndFilterCalendarResponse(response) {
 						old: oldTeacherImportIdentifier,
 						current: teacherImportIdentifier
 					},
-					isCancelled: isCancelled
+					isCancelled
 				}
 			]
 		}
@@ -623,24 +624,26 @@ function parseAndFilterCalendarResponse(response) {
 		}).map((d, i) => {
 			return [i, d.name, d.sessions[0].start, d.sessions[0].finish]
 		})
-	for (let i of timeMaps) {
-		for (let j of timeMaps) {
-			/*	j is the first period, to which we add the session from i
-				i is the second period - which we delete
-				A period looks like [4, "12MM02", DateA, DateB...],
-				where DateA < DateB (in Unix time)
+	// Iterate over the adjacent pairs (n-1 in an array of size n) 
+	for (let i = 0; i < timeMaps.length - 1; i++) {
+		/*	A period looks like [4, "12MM02", DateA, DateB...],
+			where DateA < DateB
+			Due to the preceding sort, the second period should start later than the first.
+			A possible error may be that the sessions are disconnected
 			*/
-			if (i[0] > j[0] && i[1] === j[1]) {
-				let jfinish = new Date(j[3])
-				let istart = new Date(i[2])
+		const first = timeMaps[i]
+		const second = timeMaps[i + 1]
 
-				let gap = 60 * (jfinish.getHours() - istart.getHours()) + 
-				    	  (istart.getMinutes() - jfinish.getMinutes())
+		if (first[1] !== second[1]) continue
 
-				if (widgetConfig.doubleThresholdMinutes >= gap) {
-					results[j[0]].sessions.push(results[i[0]].sessions.shift())
-				}
-			}
+		const firstend = new Date(first[3])
+		const secondstart = new Date(second[2])
+		// The difference in time in minutes
+		const gap = (secondstart - firstend) / 60
+
+		if (widgetConfig.doubleThresholdMinutes >= gap) {
+			// Must move the sessions if they are named and timed similarly
+			results[first[0]].sessions.push(results[second[0]].sessions.shift())
 		}
 	}
 	return results
