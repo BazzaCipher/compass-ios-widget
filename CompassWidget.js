@@ -127,7 +127,8 @@ let widgetConfig = {
 
 Compass.sessionToken = widgetConfig.sessionToken
 Promise.all([
-	Compass.post("/Services/Calendar.svc/GetCalendarEventsByUser", {		activityId: null,
+	Compass.post("/Services/Calendar.svc/GetCalendarEventsByUser", {
+		activityId: null,
 		startDate: getCurrentDate(),
 		endDate: getCurrentDate(),
 		homePage: true,
@@ -229,13 +230,17 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		if (eventName in widgetConfig.customisations.mappings) {
 			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]];
 			if (template !== undefined) {
-				if ("backgroundColor" in template) {					lineBackgroundColor = new Color(template.backgroundColor)
+				if ("backgroundColor" in template) {
+					lineBackgroundColor = new Color(template.backgroundColor)
 				}
-				if ("color" in template) {						lineColor = new Color(template.color)
+				if ("color" in template) {
+					lineColor = new Color(template.color)
 				}
-				if ("accentColor" in template) {					lineAccentColor = new Color(template.accentColor)
+				if ("accentColor" in template) {
+					lineAccentColor = new Color(template.accentColor)
 				}
-				if ("name" in template) {						eventName = template.name
+				if ("name" in template) {
+					eventName = template.name
 				}
 			}
 		}
