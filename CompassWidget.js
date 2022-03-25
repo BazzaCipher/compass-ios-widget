@@ -479,7 +479,6 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	return widget
 }
 
-		 request.load();
 function getCurrentDate() {
 	if (widgetConfig.debugUseDate) return widgetConfig.debugUseDate;
 
