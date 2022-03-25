@@ -634,7 +634,7 @@ function parseAndFilterCalendarResponse(response) {
 				let jfinish = new Date(j[3])
 				let istart = new Date(i[2])
 
-				let gap = Math.round(((istart - jfinish % 86400000) % 3600000) / 60000)
+				let gap = istart.getMinutes() - jfinish.getMinutes()
 
 				if (widgetConfig.doubleThresholdMinutes >= gap) {
 					results[j[0]].sessions.push(results[i[0]].sessions.shift())
