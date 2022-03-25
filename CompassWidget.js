@@ -151,7 +151,7 @@ Promise.all([
 }).catch(e => {
 	console.error(e)
 
-	if (["SyntaxError", "TypeError", "ReferenceError"].includes(e.name)) throw 'Fatal Error';
+	if (["SyntaxError", "TypeError", "ReferenceError"].includes(e.name)) throw 'Fatal Error'
 
 	let cacheData = getCachedResponse(`${getCurrentDate()}-calendar.json`)
 
@@ -169,32 +169,32 @@ Promise.all([
 	}
 }).catch(e => {
 	console.error(e)
-});
+})
 
 function createWidget(activities, offlineDataModificationTime = null, isOfflineAndNoData = false) {
 
-	let widget = new ListWidget();
+	let widget = new ListWidget()
 
-	//let widgetLightBackgroundColor = new Color("#DDD");
-	let widgetLightBackgroundColor = new Color("#EEE");
-	let widgetDarkBackgroundColor = new Color("#333");
+	//let widgetLightBackgroundColor = new Color("#DDD")
+	let widgetLightBackgroundColor = new Color("#EEE")
+	let widgetDarkBackgroundColor = new Color("#333")
 
 	let lineDefaultBackgroundColorLight = new Color("#FFF")
 	let lineDefaultBackgroundColorDark = new Color("#222")
 
-	let lineDefaultColorLight = new Color("#333");
-	let lineDefaultColorDark = new Color("#EEE");
+	let lineDefaultColorLight = new Color("#333")
+	let lineDefaultColorDark = new Color("#EEE")
 
-	let lineDefaultAccentColorLight = new Color("#333");
-	let lineDefaultAccentColorDark = new Color("#FFFF00");
+	let lineDefaultAccentColorLight = new Color("#333")
+	let lineDefaultAccentColorDark = new Color("#FFFF00")
 
 	widget.backgroundColor = Color.dynamic(
 		widgetLightBackgroundColor,
 		widgetDarkBackgroundColor
-	);
-	widget.setPadding(5, 5, 5, 5);
+	)
+	widget.setPadding(5, 5, 5, 5)
 
-	let mainFont = Font.body();
+	let mainFont = Font.body()
 
 	let currentDate = new Date()
 	let formatOptions = {
@@ -203,32 +203,32 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	}
 
 	let previousActivity = null
-	let lineCount = 0;
+	let lineCount = 0
 	for (let i of activities) {
 		let sessionCount = 0
 		for (let session of i.sessions) {
 			let startDate = new Date(i.start)
 			let finishDate = new Date(i.finish)
 
-			let eventFinished = finishDate <= currentDate;
+			let eventFinished = finishDate <= currentDate
 
 			if (eventFinished && !widgetConfig.showElapsedEvents) {
-				continue;
+				continue
 			}
 
-			sessionCount++;
+			sessionCount++
 		}
 
-		if (sessionCount === 0) continue;
+		if (sessionCount === 0) continue
 
 		let line = widget.addStack()
 		let lineBackgroundColor = Color.dynamic(lineDefaultBackgroundColorLight, lineDefaultBackgroundColorDark)
 		let lineColor = Color.dynamic(lineDefaultColorLight, lineDefaultColorDark)
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
 
-		let eventName = i.name;
+		let eventName = i.name
 		if (eventName in widgetConfig.customisations.mappings) {
-			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]];
+			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]]
 			if (template !== undefined) {
 				if ("backgroundColor" in template) {
 					lineBackgroundColor = new Color(template.backgroundColor)
@@ -245,12 +245,12 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 			}
 		}
 
-		line.backgroundColor = lineBackgroundColor;
+		line.backgroundColor = lineBackgroundColor
 		line.setPadding(6, 11, 6, 13)
 		line.cornerRadius = 15
 
 		if (i.activityId) {
-				line.url = `https://${Compass.fqdn}/Organise/Activities/Activity.aspx?targetUserId=${widgetConfig.userId}#activity/${i.activityId}`;
+				line.url = `https://${Compass.fqdn}/Organise/Activities/Activity.aspx?targetUserId=${widgetConfig.userId}#activity/${i.activityId}`
 		}
 
 		let lineContent = line.addStack()
@@ -289,11 +289,11 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 			eventTime.textColor = lineColor
 
 			if (session.teacher.current) {
-				let tiiStack = eventDetailsStack.addStack();
-				let openTiiPar = tiiStack.addText("(");
+				let tiiStack = eventDetailsStack.addStack()
+				let openTiiPar = tiiStack.addText("(")
 		 		if (session.teacher.old) {
-		 			let oldTeacherStack = tiiStack.addStack();
-		 			oldTeacherStack.backgroundGradient = calculateStrikethroughGradient(lineAccentColor, 8);
+		 			let oldTeacherStack = tiiStack.addStack()
+		 			oldTeacherStack.backgroundGradient = calculateStrikethroughGradient(lineAccentColor, 8)
 
 		 			let oldTeacherImportIdentifier = oldTeacherStack.addText(session.teacher.old)
 					oldTeacherImportIdentifier.font = eventDetailsFont
@@ -307,7 +307,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		 			teacherImportIdentifier.font = eventDetailsFont
 		 			teacherImportIdentifier.textColor = lineColor
 				}
-				let closeTiiPar = tiiStack.addText(")");
+				let closeTiiPar = tiiStack.addText(")")
 
 				openTiiPar.font = eventDetailsFont
 				closeTiiPar.font = eventDetailsFont
@@ -325,7 +325,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 
 		locationSessionStack.spacing = 5
 
-		let locationSessions = i.sessions;
+		let locationSessions = i.sessions
 
 		if (
 			locationSessions.length > 1 &&
@@ -345,7 +345,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 				let currentSessionLocationStack = locationSessionStack.addStack()
 				if (session.location.old) {
 					let locationStack = currentSessionLocationStack.addStack()
-					let oldLocationStack = locationStack.addStack();
+					let oldLocationStack = locationStack.addStack()
 					locationStack.spacing = 6
 					oldLocationStack.backgroundGradient = calculateStrikethroughGradient(lineAccentColor, 10)
 
@@ -367,7 +367,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		locationSessionStack.addSpacer(3)
 
 		previousActivity = i
-		lineCount++;
+		lineCount++
 
 		// add a little padding below the line
 		if (lineCount !== activities.length) {
@@ -376,7 +376,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	}
 
 	if (lineCount === 0) {
-		widget.addSpacer();
+		widget.addSpacer()
 		if (isOfflineAndNoData) {
 			let offlineText = widget.addText("Offline")
 			offlineText.textColor = Color.dynamic(
@@ -401,11 +401,11 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 			let doneIconImage = widget.addImage(compassLogo)
 			doneIconImage.imageSize = new Size(100, 100)
 			doneIconImage.centerAlignImage()
-			doneIconImage.imageOpacity = 0.2;
+			doneIconImage.imageOpacity = 0.2
 		}
 	}
 
-	widget.addSpacer();
+	widget.addSpacer()
 
 	let borderTopBG = new LinearGradient()
 	let gradientColor1 = Color.dynamic(
@@ -444,9 +444,9 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	let statusFont = Font.regularMonospacedSystemFont(10)
 
 	if (offlineDataModificationTime !== null) {
-		let statusText = "Offline - Last updated at: ".toUpperCase();
+		let statusText = "Offline - Last updated at: ".toUpperCase()
 		statusText = status.addText(statusText)
-		statusText.font = Font.boldMonospacedSystemFont(10);
+		statusText.font = Font.boldMonospacedSystemFont(10)
 		statusText.textColor = Color.dynamic(
 			new Color("#F00"),
 			new Color("#F88")
@@ -459,9 +459,9 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		lastUpdated = status.addText(lastUpdated)
 		lastUpdated.font = statusFont
 	} else {
-		let statusText = "Last updated: ".toUpperCase();
+		let statusText = "Last updated: ".toUpperCase()
 		statusText = status.addText(statusText)
-		statusText.font = statusFont;
+		statusText.font = statusFont
 
 		let lastUpdated = currentDate.toLocaleTimeString(
 				'en-US',
@@ -474,13 +474,13 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	status.addSpacer()
 
 	let dateStatus = status.addText(getCurrentDate())
-	dateStatus.font = statusFont;
+	dateStatus.font = statusFont
 
 	return widget
 }
 
 function getCurrentDate() {
-	if (widgetConfig.debugUseDate) return widgetConfig.debugUseDate;
+	if (widgetConfig.debugUseDate) return widgetConfig.debugUseDate
 
 	let localDate = new Date()
 	localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset())
@@ -490,7 +490,7 @@ function getCurrentDate() {
 function getDynamicAssetById(assetId) {
 	let fmg = FileManager.local()
 	let resourceDir = fmg.bookmarkedPath("Compass_Resources")
-	let img;
+	let img
 	if (Device.isUsingDarkAppearance()) {
 		img = fmg.readImage(`${resourceDir}/${assetId}_DARK.png`)
 	} else {
@@ -503,7 +503,7 @@ function cacheResponse(data, filename) 	{
 	let fmg = FileManager.local()
 	let resourceDir = fmg.bookmarkedPath("Compass_Resources")
 	let cachePath = `${resourceDir}/cache`
-	if (!fmg.fileExists(cachePath)) fmg.createDirectory(`${resourceDir}/cache`);
+	if (!fmg.fileExists(cachePath)) fmg.createDirectory(`${resourceDir}/cache`)
 
 	data = JSON.stringify(data)
 	fmg.writeString(`${cachePath}/${filename}`, data)
@@ -516,7 +516,7 @@ function getCachedResponse(filename) {
 
 	let data = "null"
 	let modificationTime = new Date()
-	let exists = false;
+	let exists = false
 
 	let filePath = `${cachePath}/${filename}`
 	if (fmg.fileExists(filePath)) {
@@ -531,40 +531,40 @@ function getCachedResponse(filename) {
 function parseAndFilterCalendarResponse(response) {
 	let results = response.d
 	if (!widgetConfig.showCancelledEvents) {
-		results = results.filter(i => i.runningStatus !== 0);
+		results = results.filter(i => i.runningStatus !== 0)
 	}
 	results = results.filter(i => {
 		return widgetConfig.showEventTypes.includes(i.activityType)
-	});
+	})
 
  	if (!widgetConfig.showElapsedEvents) {
  		results = results.filter(i => {
- 			let eventFinished = new Date(i.finish) > new Date();
-			return (eventFinished && !widgetConfig.showElapsedEvents);
- 		});
+ 			let eventFinished = new Date(i.finish) > new Date()
+			return (eventFinished && !widgetConfig.showElapsedEvents)
+ 		})
 	}
 
 	results = results.map(activity => {
 		let titleElements = activity.longTitleWithoutTime.split(" - ")
 
-		let location;
-		let oldLocation = null;
+		let location
+		let oldLocation = null
 
-		let teacherImportIdentifier;
-		let oldTeacherImportIdentifier = null;
+		let teacherImportIdentifier
+		let oldTeacherImportIdentifier = null
 
-		let changedExpr = /<strike>(.*)<\/strike>&nbsp; (.*)/
+		let changedExpr = /<strike>(.*)<\/strike>&nbsp (.*)/
 
 		// if the event title has a hyphen it will trip up the splitter, so fix it up here
 		if (titleElements[0] !== activity.title) {
-			titleElements.splice(1, 1);
-			titleElements[0] = activity.title;
+			titleElements.splice(1, 1)
+			titleElements[0] = activity.title
 		}
 
 		if (activity.activityType === 7) {
 		// a calendar item - don't parse the title
-			teacherImportIdentifier = null;
-			location = null;
+			teacherImportIdentifier = null
+			location = null
 		} else if (titleElements.length == 3) {
 		// title is in the form of "CII - LOC - TII"
 			teacherImportIdentifier = titleElements[2]
@@ -616,13 +616,13 @@ function parseAndFilterCalendarResponse(response) {
 				}
 			]
 		}
-	});
-	results = results.sort((a, b) => {
-		return a.sessions[0].start.localeCompare(b.sessions[0].start)
-	});
-	let timeMaps = results.map((d, i) => {
-		return [i, d.name, d.sessions[0].start, d.sessions[0].finish]
-	});
+	})
+	let timeMaps = results
+		.sort((a, b) => {
+			return a.sessions[0].start.localeCompare(b.sessions[0].start)
+		}).map((d, i) => {
+			return [i, d.name, d.sessions[0].start, d.sessions[0].finish]
+		})
 	for (let i of timeMaps) {
 		for (let j of timeMaps) {
 			/*	j is the first period, to which we add the session from i
