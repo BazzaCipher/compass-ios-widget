@@ -620,18 +620,20 @@ function parseAndFilterCalendarResponse(response) {
 	});
 	for (let i of timeMaps) {
 		for (let j of timeMaps) {
-			if (i[0] !== j[0] && i[1] === j[1] && i[0] > j[0]) {
-					// j is the first period, to which we add the session from i
-					// i is the second period - which we delete
-					let jfinish = new Date(j[3])
-					let istart = new Date(i[2])
+			/*	j is the first period, to which we add the session from i
+				i is the second period - which we delete
+				A period looks like [4, "12MM02", DateA, DateB...],
+				where DateA < DateB (in Unix time)
+			*/
+			if (i[0] > j[0] && i[1] === j[1]) {
+				let jfinish = new Date(j[3])
+				let istart = new Date(i[2])
 
-					let gap = Math.round(((istart - jfinish % 86400000) % 3600000) / 60000)
+				let gap = Math.round(((istart - jfinish % 86400000) % 3600000) / 60000)
 
-					if (widgetConfig.doubleThresholdMinutes >= gap) {
-						results[j[0]].sessions.push(results[i[0]].sessions[0])
-						results.splice(i[0], 1)
-					}
+				if (widgetConfig.doubleThresholdMinutes >= gap) {
+					results[j[0]].sessions.push(results[i[0]].sessions.shift())
+				}
 			}
 		}
 	}
