@@ -171,6 +171,16 @@ Promise.all([
 	console.error(e)
 })
 
+function isOnline() {
+	const request = new Request("https://google.com");
+	try {
+		request.load();
+	} catch (exception) {
+		return false
+	}
+	return true
+}
+
 function createWidget(activities, offlineDataModificationTime = null, isOfflineAndNoData = false) {
 
 	let widget = new ListWidget()
