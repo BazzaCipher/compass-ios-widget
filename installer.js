@@ -15,7 +15,7 @@ async function installScript(name) {
   const req = new Request(url + name);
   const code = await req.loadString();
   const hash = hashCode(code);
-  const codetostore = `// Variables used by Scriptable.\n// These must be at the very top of the file. Do not edit.\n// icon-glyph: compass;\n// This script was downloaded with inspiration from ScriptDude.\n// Do not remove these lines, if you want to benefit from automatic updates.\n// source: ${sourceUrl}; hash: ${hash};\n\n${code}`;
+  const codetostore = `// icon-glyph: compass;\n// This script was downloaded with inspiration from ScriptDude.\n// Do not remove these lines, if you want to benefit from automatic updates.\n// source: ${url}; hash: ${hash};\n\n${code}`;
 
   fmcloud.writeString(fmcloud.joinPath(scriptableDir, name), codetostore);
 }
