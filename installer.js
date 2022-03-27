@@ -10,57 +10,34 @@ function hashCode(input) {
   return Array.from(input).reduce((accumulator, currentChar) => Math.imul(31, accumulator) + currentChar.charCodeAt(0), 0)
 }
 
-async function installScript(name, dir, sourceURL) {
+async function installScript(name) {
   // Installs a script direct from github
-  const req = new Request(`${sourceURL}${name}.js`);
+  const req = new Request(url + name);
   const code = await req.loadString();
   const hash = hashCode(code);
-  const codetostore = `// Variables used by Scriptable.\n// These must be at the very top of the file. Do not edit.\n// icon-glyph: compass;\n// This script was downloaded with inspiration from ScriptDude.\n// Do not remove these lines, if you want to benefit from automatic updates.\n// source: ${sourceUrl}; hash: ${hash};\n\n${code}` 
+  const codetostore = `// Variables used by Scriptable.\n// These must be at the very top of the file. Do not edit.\n// icon-glyph: compass;\n// This script was downloaded with inspiration from ScriptDude.\n// Do not remove these lines, if you want to benefit from automatic updates.\n// source: ${sourceUrl}; hash: ${hash};\n\n${code}`;
 
-  fmcloud.writeString(fmcloud.join(scriptableDir, `${name}.js`), codetostore)
+  fmcloud.writeString(fmcloud.joinPath(scriptableDir, name), codetostore);
 }
 
-function installResources(sourceURL) {
+async function installResources(name) {
   // Install fixed resources
+  const req = new Request(url + name);
+  const data = await req.load();
+
+  fmlocal.write(fmlocal.joinPath(installDir, name), data)
 }
 
-function installConfigs(sourceURL) {
+async function installConfigs(name) {
   // Install fixed and malleable configs
-}
+  const req = new Request(url + name);
+  const data = await req.loadJson();
 
-class Installer {
-  
-  constructor(name, sourceUrl) {
-    this.name = name
-    this.url = sourceUrl
-    this.fileManager = FileManager.local()
-    this.documentsDirectory = this.fileManager.documentsDirectory()
-  }
-  
-  hashCode(input) {
-    return Array.from(input).reduce((accumulator, currentChar) => Math.imul(31, accumulator) + currentChar.charCodeAt(0), 0)
-  }
-    
-  async installScript(name = this.name, sourceUrl = this.url, documentationUrl, icon, color, execute) {
-    let filePath = this.fileManager.joinPath(this.documentsDirectory, name + '.js');
-    let req = new Request(sourceUrl);
-    let code = await req.loadString();
-    let hash = this.hashCode(code);
-    let codeToStore = Data.fromString(`// Variables used by Scriptable.\n// These must be at the very top of the file. Do not edit.\n// icon-color: ${color}; icon-glyph: ${icon};\n// This script was downloaded with inspiration from ScriptDude.\n// Do not remove these lines, if you want to benefit from automatic updates.\n// source: ${sourceUrl}; docs: ${documentationUrl}; hash: ${hash};\n\n${code}`);
-    this.fileManager.write(filePath, codeToStore);
-
-    if (!execute) return;
-    
-    let callback = new CallbackURL("scriptable:///add");
-    callback.addParameter("scriptName", name);
-    callback.open();
-  }
-  
+  fmlocal.write(fmlocal.joinPath(installDir, name), data)
+  fmcloud.write(fmcloud.joinPath(scriptableDir, name), data)
 }
 
 async function installAll() {
     // Install all scripts
     await new Installer('CompassAPI')
 }
-
-installAll()
