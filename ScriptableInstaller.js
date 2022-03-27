@@ -3,7 +3,7 @@ const url = 'https://raw.githubusercontent.com/BazzaCipher/compass-ios-widget/ma
 const fmlocal = FileManager.local();
 const fmcloud = FileManager.iCloud();
 
-const installDir = fmlocal.joinPath(fmlocal.documentsDirectory(), 'Compass_Resources');
+const installDir = fmlocal.joinPath(fmlocal.libraryDirectory(), 'Compass_Resources');
 const scriptableDir = fmcloud.documentsDirectory();
 
 function hashCode(input) {
@@ -20,7 +20,7 @@ async function installScript(name) {
   fmcloud.writeString(fmcloud.joinPath(scriptableDir, name), codetostore);
 }
 
-async function installResources(name) {
+async function installResource(name) {
   // Install fixed resources
   const req = new Request(url + "/Compass_Resources/" + name);
   const data = await req.load();
@@ -38,6 +38,20 @@ async function installConfigs(name) {
 }
 
 async function installAll() {
-    // Install all scripts
-    await new Installer('CompassAPI')
+  // Install all scripts
+  if (fmlocal.isDirectory(installDir)) {
+    fmlocal.createDictory(installDir, true)
+  }
+  try {
+    await installScript('CompassAPI.js')
+    await installScript('CompassWidget.js')
+    await installResource('compassLogoSmall_DARK.png')
+    await installResource('compassLogoSmall_LIGHT.png')
+    await installResource('compassLogo_DARK.png')
+    await installResources('compassLogo_LIGHT.png')
+  } catch (e) {
+    console.error(e)
+  }
+
+  // Delete itself
 }
