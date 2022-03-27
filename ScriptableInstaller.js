@@ -22,7 +22,7 @@ async function installScript(name) {
 
 async function installResources(name) {
   // Install fixed resources
-  const req = new Request(url + name);
+  const req = new Request(url + "/Compass_Resources/" + name);
   const data = await req.load();
 
   fmlocal.write(fmlocal.joinPath(installDir, name), data)
