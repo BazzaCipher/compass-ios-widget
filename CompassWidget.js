@@ -499,7 +499,7 @@ function getCurrentDate() {
 
 function getDynamicAssetById(assetId) {
 	let fmg = FileManager.local()
-	let resourceDir = fmg.bookmarkedPath("Compass_Resources")
+	let resourceDir = fmg.joinPath(fmg.libraryDirectory(), "Compass_Resources")
 	let img
 	if (Device.isUsingDarkAppearance()) {
 		img = fmg.readImage(`${resourceDir}/${assetId}_DARK.png`)
@@ -511,7 +511,7 @@ function getDynamicAssetById(assetId) {
 
 function cacheResponse(data, filename) 	{
 	let fmg = FileManager.local()
-	let resourceDir = fmg.bookmarkedPath("Compass_Resources")
+	let resourceDir = fmg.joinPath(fmg.libraryDirectory(), "Compass_Resources")
 	let cachePath = `${resourceDir}/cache`
 	if (!fmg.fileExists(cachePath)) fmg.createDirectory(`${resourceDir}/cache`)
 
@@ -521,7 +521,7 @@ function cacheResponse(data, filename) 	{
 
 function getCachedResponse(filename) {
 	let fmg = FileManager.local()
-	let resourceDir = fmg.bookmarkedPath("Compass_Resources")
+	let resourceDir = fmg.joinPath(fmg.libraryDirectory(), "Compass_Resources")
 	let cachePath = `${resourceDir}/cache`
 
 	let data = "null"
