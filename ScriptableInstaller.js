@@ -10,17 +10,25 @@ function hashCode(input) {
   return Array.from(input).reduce((accumulator, currentChar) => Math.imul(31, accumulator) + currentChar.charCodeAt(0), 0)
 }
 
-async function installScript(name) {
+function installScript(name, uinfo) {
   // Installs a script direct from github
   const req = new Request(url + name);
   const code = await req.loadString();
+
+  if (uinfo.hasOwnProperty('userId')) {
+    code.replace('userId: 0', `userId: ${uinfo.userId}`)
+  }
+  if (uinfo.hasOwnProperty('domain')) {
+    code.replace('yourdomain.compass.education', domain)
+  }
+
   const hash = hashCode(code);
   const codetostore = `// icon-glyph: compass;\n// This script was downloaded with inspiration from ScriptDude.\n// Do not remove these lines, if you want to benefit from automatic updates.\n// source: ${url}; hash: ${hash};\n\n${code}`;
 
   fmcloud.writeString(fmcloud.joinPath(scriptableDir, name), codetostore);
 }
 
-async function installResource(name) {
+function installResource(name) {
   // Install fixed resources
   const req = new Request(url + "/Compass_Resources/" + name);
   const data = await req.load();
@@ -28,13 +36,14 @@ async function installResource(name) {
   fmlocal.write(fmlocal.joinPath(installDir, name), data)
 }
 
-async function installConfigs(name) {
-  // Install fixed and malleable configs
-  const req = new Request(url + name);
-  const data = await req.loadJson();
+async function userInfo () {
+  const wv = new WebView()
+  await wv.loadURL("https://schools.compass.education/")
 
-  fmlocal.write(fmlocal.joinPath(installDir, name), data)
-  fmcloud.write(fmcloud.joinPath(scriptableDir, name), data)
+  return {
+    userId: await wv.evaluateJavascript('Compass.post("/Services/Mobile.svc/UpgradeSamlSession"); completion(Compass.organisationUserId)', true),
+    domain: await wv.evaluateJavascript('document.domain'),
+  }
 }
 
 async function installAll() {
@@ -43,15 +52,24 @@ async function installAll() {
     fmlocal.createDictory(installDir, true)
   }
   try {
-    await installScript('CompassAPI.js')
-    await installScript('CompassWidget.js')
-    await installResource('compassLogoSmall_DARK.png')
-    await installResource('compassLogoSmall_LIGHT.png')
-    await installResource('compassLogo_DARK.png')
-    await installResources('compassLogo_LIGHT.png')
+    const info = await userInfo()
+    if (!info.domain.includes('compass.education')) {
+      throw new Error('Please sign in')
+    }
+
+    installScript('CompassAPI.js')
+    installScript('CompassWidget.js', info)
+    installResource('compassLogoSmall_DARK.png')
+    installResource('compassLogoSmall_LIGHT.png')
+    installResource('compassLogo_DARK.png')
+    installResource('compassLogo_LIGHT.png')    
+
+    // Delete itself
+    let selfFilePath = fmcloud.joinPath(this.documentsDirectory, Script.name() + '.js');
+    fmcloud.remove(selfFilePath);
   } catch (e) {
     console.error(e)
   }
-
-  // Delete itself
 }
+
+installAll()
