@@ -39,16 +39,17 @@ async function installResource(name) {
 async function userInfo () {
   const wv = new WebView()
   await wv.loadURL("https://schools.compass.education/")
+  await wv.present(true)
 
   return {
-    userId: await wv.evaluateJavascript('Compass.post("/Services/Mobile.svc/GetExtendedUser"); completion(Compass.organisationUserId)', true),
+    userId: await wv.evaluateJavaScript('Compass.post("/Services/Accounts.svc/GetAccount"); completion(Compass.organisationUserId)', true),
     domain: await wv.evaluateJavascript('document.domain'),
   }
 }
 
 async function installAll() {
   // Install all scripts
-  if (fmlocal.isDirectory(installDir)) {
+  if (!fmlocal.isDirectory(installDir)) {
     fmlocal.createDictory(installDir, true)
   }
   try {
