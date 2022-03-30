@@ -10,7 +10,7 @@ function hashCode(input) {
   return Array.from(input).reduce((accumulator, currentChar) => Math.imul(31, accumulator) + currentChar.charCodeAt(0), 0)
 }
 
-function installScript(name, uinfo) {
+async function installScript(name, uinfo) {
   // Installs a script direct from github
   const req = new Request(url + name);
   const code = await req.loadString();
@@ -28,7 +28,7 @@ function installScript(name, uinfo) {
   fmcloud.writeString(fmcloud.joinPath(scriptableDir, name), codetostore);
 }
 
-function installResource(name) {
+async function installResource(name) {
   // Install fixed resources
   const req = new Request(url + "/Compass_Resources/" + name);
   const data = await req.load();
@@ -41,7 +41,7 @@ async function userInfo () {
   await wv.loadURL("https://schools.compass.education/")
 
   return {
-    userId: await wv.evaluateJavascript('Compass.post("/Services/Mobile.svc/UpgradeSamlSession"); completion(Compass.organisationUserId)', true),
+    userId: await wv.evaluateJavascript('Compass.post("/Services/Mobile.svc/GetExtendedUser"); completion(Compass.organisationUserId)', true),
     domain: await wv.evaluateJavascript('document.domain'),
   }
 }
