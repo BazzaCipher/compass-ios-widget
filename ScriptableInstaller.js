@@ -65,7 +65,7 @@ async function installAll() {
     installResource('compassLogo_LIGHT.png')    
 
     // Delete itself
-    let selfFilePath = fmcloud.joinPath(this.documentsDirectory, Script.name() + '.js');
+    let selfFilePath = fmcloud.joinPath(scriptableDir, Script.name() + '.js');
     fmcloud.remove(selfFilePath);
   } catch (e) {
     console.error(e)
