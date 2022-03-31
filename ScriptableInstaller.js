@@ -19,7 +19,7 @@ async function installScript(name, uinfo) {
     code.replace('userId: 0', `userId: ${uinfo.userId}`)
   }
   if (uinfo.hasOwnProperty('domain')) {
-    code.replace('yourdomain.compass.education', domain)
+    code.replace('yourdomain.compass.education', uinfo.domain)
   }
 
   const hash = hashCode(code);
@@ -41,10 +41,7 @@ async function userInfo () {
   await wv.loadURL("https://schools.compass.education/")
   await wv.present(true)
 
-  return {
-    userId: await wv.evaluateJavaScript('Compass.post("/Services/Accounts.svc/GetAccount"); completion(Compass.organisationUserId)', true),
-    domain: await wv.evaluateJavascript('document.domain'),
-  }
+  return await wv.evaluateJavaScript("(()=>{try{Compass.post('/Services/Accounts.svc/GetAccount').then(({d}) => completion({userId: d.userId,domain: document.domain}));return}catch(e){return -1}})()", true)
 }
 
 async function installAll() {
@@ -54,9 +51,8 @@ async function installAll() {
   }
   try {
     const info = await userInfo()
-    if (!info.domain.includes('compass.education')) {
-      throw new Error('Please sign in')
-    }
+    if (!info)
+      throw new Error('Please sign into your school')
 
     installScript('CompassAPI.js')
     installScript('CompassWidget.js', info)
