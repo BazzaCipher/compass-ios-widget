@@ -13,13 +13,13 @@ function hashCode(input) {
 async function installScript(name, uinfo) {
   // Installs a script direct from github
   const req = new Request(url + name);
-  const code = await req.loadString();
+  let code = await req.loadString();
 
   if (uinfo.hasOwnProperty('userId')) {
-    code.replace('userId: 0', `userId: ${uinfo.userId}`)
+    code = code.replace('userId: 0', `userId: ${uinfo.userId}`)
   }
   if (uinfo.hasOwnProperty('domain')) {
-    code.replace('yourdomain.compass.education', uinfo.domain)
+    code = code.replace('yourdomain.compass.education', uinfo.domain)
   }
 
   const hash = hashCode(code);
