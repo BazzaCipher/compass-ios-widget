@@ -10,7 +10,7 @@ function hashCode(input) {
   return Array.from(input).reduce((accumulator, currentChar) => Math.imul(31, accumulator) + currentChar.charCodeAt(0), 0)
 }
 
-async function installScript(name, uinfo) {
+async function installScript(name, uinfo = {}) {
   // Installs a script direct from github
   const req = new Request(url + name);
   let code = await req.loadString();
