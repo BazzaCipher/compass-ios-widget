@@ -236,7 +236,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		let lineColor = Color.dynamic(lineDefaultColorLight, lineDefaultColorDark)
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
 
-		let eventName = i.name
+		let eventName = extractClassCode(i.name)
 		if (eventName in widgetConfig.customisations.mappings) {
 			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]]
 			if (template !== undefined) {
@@ -657,6 +657,14 @@ function parseAndFilterCalendarResponse(response) {
 		}
 	}
 	return results
+}
+
+function extractClassCode(className) {
+	/** Assumptions:
+	 * Class name is not a whole word
+	 * Letters with different meanings do not exist
+	 */
+	return className.replace(/\d+/g, '')
 }
 
 function calculateStrikethroughGradient(color, height) {
