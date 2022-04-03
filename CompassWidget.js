@@ -9,7 +9,7 @@ let Compass = new CompassAPI(
 
 let widgetConfig = {
 	// a valid compass session token - the cookie "ASP.NET_SessionId"
-	sessionToken: "",
+	sessionToken: "-> PUT YOUR ASP SESSION_ID TOKEN HERE <-",
 	// your compass userId - you can get it by running "Compass.organisationUserId" in devtools
 	userId: 0,
 	// whether to show events that have been cancelled
