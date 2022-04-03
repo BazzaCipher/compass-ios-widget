@@ -64,6 +64,10 @@ async function installAll() {
     // Delete itself
     let selfFilePath = fmcloud.joinPath(scriptableDir, Script.name() + '.js');
     fmcloud.remove(selfFilePath);
+
+    let callback = new CallbackURL("scriptable:///run");
+    callback.addParameter("scriptName", "CompassAPI.js");
+    callback.open();
   } catch (e) {
     console.error(e)
   }
