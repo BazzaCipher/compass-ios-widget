@@ -54,20 +54,20 @@ async function installAll() {
     if (!info)
       throw new Error('Please sign into your school')
 
-    installScript('CompassAPI.js')
-    installScript('CompassWidget.js', info)
-    installResource('compassLogoSmall_DARK.png')
-    installResource('compassLogoSmall_LIGHT.png')
-    installResource('compassLogo_DARK.png')
-    installResource('compassLogo_LIGHT.png')    
+    await installScript('CompassAPI.js')
+    await installScript('CompassWidget.js', info)
+    await installResource('compassLogoSmall_DARK.png')
+    await installResource('compassLogoSmall_LIGHT.png')
+    await installResource('compassLogo_DARK.png')
+    await installResource('compassLogo_LIGHT.png')    
 
     // Delete itself
     let selfFilePath = fmcloud.joinPath(scriptableDir, Script.name() + '.js');
-    fmcloud.remove(selfFilePath);
+    await fmcloud.remove(selfFilePath);
 
     let callback = new CallbackURL("scriptable:///run");
-    callback.addParameter("scriptName", "CompassAPI.js");
-    callback.open();
+    await callback.addParameter("scriptName", "CompassWidget.js");
+    await callback.open();
   } catch (e) {
     console.error(e)
   }
