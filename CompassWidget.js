@@ -36,87 +36,58 @@ let widgetConfig = {
 	customisations: {
 		templates: { // We suggest setting 'extra' classes as bright colours
 			"english": {
-				backgroundColor: "#ff9700",
+				backgroundColor: "#FFB1AF",
 				color: "#000000",
 				accentColor: "#000000",
 				name: "English"
 			},
-			"geography": {
-				backgroundColor: "#973000",
+			"humanities": {
+				backgroundColor: "#FFCBA5",
 				color: "#ffff00",
 				accentColor: "#ffff00",
 				name: "Geography"
 			},
-			"tutor": {
-				backgroundColor: "#a8a8a8",
+			"art": {
+				backgroundColor: "#FFEEA5",
 				color: "#000000",
 				accentColor: "#000000",
-				name: "Tutor"
+				name: "Art"
 			},
 			"sport": {
-				backgroundColor: "#28a10a",
+				backgroundColor: "#BB85AB",
 				color: "#FFF",
 				accentColor: "#FFF",
 				name: "Sport"
 			},
-			"pdhpe": {
-				backgroundColor: "#28a10a",
+			"mathematics": {
+				backgroundColor: "#D6D4FF",
 				color: "#FFF",
 				accentColor: "#FFF",
-				name: "PDHPE"
-			},
-			"maths": {
-				backgroundColor: "#ff0000",
-				color: "#ffffff",
-				accentColor: "#ffffff",
 				name: "Maths"
 			},
+			"science": {
+				backgroundColor: "#B3EEFF",
+				color: "#ffffff",
+				accentColor: "#ffffff",
+				name: "Chemistry"
+			},
 			"music": {
-				backgroundColor: "#faf859",
+				backgroundColor: "#C8F69B",
 				color: "#000000",
 				accentColor: "#000000",
 				name: "Music"
 			},
-			"stem": {
-				backgroundColor: "#0000ff",
-				color: "#ffff00",
-				accentColor: "#ffff00",
-				name: "STEM"
-			},
-			"science": {
-				backgroundColor: "#17a18f",
-				color: "#000000",
-				accentColor: "#000000",
-				name: "Science"
-			},
-			"religion": {
-				backgroundColor: "#007007",
-				color: "#ffffff",
-				accentColor: "#ffffff",
-				name: "Religion"
-			},
-			"art": {
-				backgroundColor: "#7f0075",
-				color: "#ffffff",
-				accentColor: "#ffffff",
-				name: "Art"
-			},
-			"french": {
-				backgroundColor: "#ffdbb6",
+			"lote": {
+				backgroundColor: "#759ECC",
 				color: "#000000",
 				accentColor: "#000000",
 				name: "French"
 			},
-			"technology": {
-				backgroundColor: "#0000ff",
-				color: "#ffff00",
-				accentColor: "#ffff00",
-				name: "Technology"
-			}
 		},
 		mappings: {
 			"ENG":		"english",
 			"SCI":		"science",
+			"BIO":		"science",
 		}
 	},
 	// uncomment this line to set the date manually instead of using the current date. for development purposes
@@ -240,6 +211,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
 
 		let eventName = extractClassCode(i.name)
+		console.log(`Extracted class code:" ${eventName}`)
 		if (eventName in widgetConfig.customisations.mappings) {
 			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]]
 			if (template !== undefined) {
