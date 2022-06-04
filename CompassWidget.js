@@ -34,7 +34,7 @@ let widgetConfig = {
 	doubleThresholdMinutes: 15,
 	// colour and name customisations for events with a specific title
 	customisations: {
-		templates: {
+		templates: { // We suggest setting 'extra' classes as bright colours
 			"english": {
 				backgroundColor: "#ff9700",
 				color: "#000000",
@@ -198,11 +198,13 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	let lineDefaultAccentColorLight = new Color("#333")
 	let lineDefaultAccentColorDark = new Color("#FFFF00")
 
+	let paddingCoefficient = activities.length // Tries to correct padding. ~3 to 9
+
 	widget.backgroundColor = Color.dynamic(
 		widgetLightBackgroundColor,
 		widgetDarkBackgroundColor
 	)
-	widget.setPadding(5, 5, 5, 5)
+	widget.setPadding(paddingCoefficient * 3, 5, 0, 5)
 
 	let mainFont = Font.body()
 
@@ -215,10 +217,11 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	let previousActivity = null
 	let lineCount = 0
 	for (let i of activities) {
+		let startDate = new Date(i.start)
+		let finishDate = new Date(i.finish)
+
 		let sessionCount = 0
 		for (let session of i.sessions) {
-			let startDate = new Date(i.start)
-			let finishDate = new Date(i.finish)
 
 			let eventFinished = finishDate <= currentDate
 
@@ -256,8 +259,8 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		}
 
 		line.backgroundColor = lineBackgroundColor
-		line.setPadding(6, 11, 6, 13)
-		line.cornerRadius = 15
+		line.setPadding(2 + 18 / paddingCoefficient, 8 + paddingCoefficient * .1, 2 + 18 / paddingCoefficient, 8 + paddingCoefficient * .1)
+		line.cornerRadius = 19 - paddingCoefficient
 
 		if (i.activityId) {
 				line.url = `https://${Compass.fqdn}/Organise/Activities/Activity.aspx?targetUserId=${widgetConfig.userId}#activity/${i.activityId}`
