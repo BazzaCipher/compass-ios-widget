@@ -1,4 +1,4 @@
-# Compass Schedule Widget for iPad
+# Compass Schedule Widget
 
 ---
 
