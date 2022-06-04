@@ -204,7 +204,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		widgetLightBackgroundColor,
 		widgetDarkBackgroundColor
 	)
-	widget.setPadding(paddingCoefficient * 3, 5, 0, 5)
+	widget.setPadding(paddingCoefficient * .5 + 4, 5, 0, 5)
 
 	let mainFont = Font.body()
 
@@ -259,8 +259,8 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		}
 
 		line.backgroundColor = lineBackgroundColor
-		line.setPadding(2 + 18 / paddingCoefficient, 8 + paddingCoefficient * .1, 2 + 18 / paddingCoefficient, 8 + paddingCoefficient * .1)
-		line.cornerRadius = 19 - paddingCoefficient
+		line.setPadding(2 + 18 / paddingCoefficient, 8 + paddingCoefficient, 2 + 18 / paddingCoefficient, 8 + paddingCoefficient)
+		line.cornerRadius = 30 - paddingCoefficient
 
 		if (i.activityId) {
 				line.url = `https://${Compass.fqdn}/Organise/Activities/Activity.aspx?targetUserId=${widgetConfig.userId}#activity/${i.activityId}`
@@ -568,7 +568,7 @@ function parseAndFilterCalendarResponse(response) {
 		
 		let isCancelled = activity.runningStatus === 0
 
-		let changedExpr = /<strike>(.*)<\/strike>&nbsp (.*)/
+		let changedExpr = /<strike>(.*)<\/strike>&nbsp; (.*)/
 
 		// if the event title has a hyphen it will trip up the splitter, so fix it up here
 		if (titleElements[0] !== activity.title) {
@@ -652,7 +652,7 @@ function parseAndFilterCalendarResponse(response) {
 		const firstend = new Date(first[3])
 		const secondstart = new Date(second[2])
 		// The difference in time in minutes
-		const gap = (secondstart - firstend) / 60
+		const gap = (secondstart - firstend) / 60000
 
 		if (widgetConfig.doubleThresholdMinutes >= gap) {
 			// Must move the sessions if they are named and timed similarly
