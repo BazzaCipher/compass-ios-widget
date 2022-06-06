@@ -14,6 +14,8 @@ let widgetConfig = {
 	userId: 0,
 	// whether to show events that have been cancelled
 	showCancelledEvents: false,
+	// whether if rolls were marked
+	showMarkedRolls: false,
 	// whether to show events which have already finished
 	showElapsedEvents: true,
 	// which types of events to show
@@ -169,13 +171,15 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	let lineDefaultAccentColorLight = new Color("#333")
 	let lineDefaultAccentColorDark = new Color("#FFFF00")
 
+	let lineDefaultBorderColor = new Color("#FF7F7F")
+
 	let paddingCoefficient = activities.length // Tries to correct padding. ~3 to 9
 
 	widget.backgroundColor = Color.dynamic(
 		widgetLightBackgroundColor,
 		widgetDarkBackgroundColor
 	)
-	widget.setPadding(paddingCoefficient * .5 + 4, 5, 0, 5)
+	widget.setPadding(paddingCoefficient * .4 + 4, 5, 0, 5)
 
 	let mainFont = Font.body()
 
@@ -201,6 +205,12 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 			}
 
 			sessionCount++
+		}
+
+		let rollMarked = i.sessions.some(e => e.rollMarked)
+		if (rollMarked) {
+			line.borderWidth = 5
+			line.borderColor = lineDefaultBorderColor
 		}
 
 		if (sessionCount === 0) continue
