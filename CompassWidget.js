@@ -214,8 +214,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		let lineColor = Color.dynamic(lineDefaultColorLight, lineDefaultColorDark)
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
 
-		let rollMarked = i.sessions.some(e => e.rollMarked)
-		if (widgetConfig.showMarkedRolls && !rollMarked) {
+		if (widgetConfig.showMarkedRolls && !i.rollMarked) {
 			line.borderWidth = 3
 			line.borderColor = lineDefaultBorderColor
 		}
