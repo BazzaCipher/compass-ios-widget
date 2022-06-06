@@ -14,6 +14,8 @@ let widgetConfig = {
 	userId: 0,
 	// whether to show events that have been cancelled
 	showCancelledEvents: false,
+	// whether if rolls were marked
+	showMarkedRolls: true,
 	// whether to show events which have already finished
 	showElapsedEvents: true,
 	// which types of events to show
@@ -34,89 +36,60 @@ let widgetConfig = {
 	doubleThresholdMinutes: 15,
 	// colour and name customisations for events with a specific title
 	customisations: {
-		templates: {
+		templates: { // We suggest setting 'extra' classes as bright colours
 			"english": {
-				backgroundColor: "#ff9700",
+				backgroundColor: "#FFB1AF",
 				color: "#000000",
 				accentColor: "#000000",
 				name: "English"
 			},
-			"geography": {
-				backgroundColor: "#973000",
+			"humanities": {
+				backgroundColor: "#FFCBA5",
 				color: "#ffff00",
 				accentColor: "#ffff00",
 				name: "Geography"
 			},
-			"tutor": {
-				backgroundColor: "#a8a8a8",
+			"art": {
+				backgroundColor: "#FFEEA5",
 				color: "#000000",
 				accentColor: "#000000",
-				name: "Tutor"
+				name: "Art"
 			},
 			"sport": {
-				backgroundColor: "#28a10a",
+				backgroundColor: "#BB85AB",
 				color: "#FFF",
 				accentColor: "#FFF",
 				name: "Sport"
 			},
-			"pdhpe": {
-				backgroundColor: "#28a10a",
+			"mathematics": {
+				backgroundColor: "#D6D4FF",
 				color: "#FFF",
 				accentColor: "#FFF",
-				name: "PDHPE"
-			},
-			"maths": {
-				backgroundColor: "#ff0000",
-				color: "#ffffff",
-				accentColor: "#ffffff",
 				name: "Maths"
 			},
+			"science": {
+				backgroundColor: "#B3EEFF",
+				color: "#ffffff",
+				accentColor: "#ffffff",
+				name: "Chemistry"
+			},
 			"music": {
-				backgroundColor: "#faf859",
+				backgroundColor: "#C8F69B",
 				color: "#000000",
 				accentColor: "#000000",
 				name: "Music"
 			},
-			"stem": {
-				backgroundColor: "#0000ff",
-				color: "#ffff00",
-				accentColor: "#ffff00",
-				name: "STEM"
-			},
-			"science": {
-				backgroundColor: "#17a18f",
-				color: "#000000",
-				accentColor: "#000000",
-				name: "Science"
-			},
-			"religion": {
-				backgroundColor: "#007007",
-				color: "#ffffff",
-				accentColor: "#ffffff",
-				name: "Religion"
-			},
-			"art": {
-				backgroundColor: "#7f0075",
-				color: "#ffffff",
-				accentColor: "#ffffff",
-				name: "Art"
-			},
-			"french": {
-				backgroundColor: "#ffdbb6",
+			"lote": {
+				backgroundColor: "#759ECC",
 				color: "#000000",
 				accentColor: "#000000",
 				name: "French"
 			},
-			"technology": {
-				backgroundColor: "#0000ff",
-				color: "#ffff00",
-				accentColor: "#ffff00",
-				name: "Technology"
-			}
 		},
 		mappings: {
 			"ENG":		"english",
 			"SCI":		"science",
+			"BIO":		"science",
 		}
 	},
 	// uncomment this line to set the date manually instead of using the current date. for development purposes
@@ -198,11 +171,15 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	let lineDefaultAccentColorLight = new Color("#333")
 	let lineDefaultAccentColorDark = new Color("#FFFF00")
 
+	let lineDefaultBorderColor = new Color("#FF7F7F")
+
+	let paddingCoefficient = activities.length // Tries to correct padding. ~3 to 9
+
 	widget.backgroundColor = Color.dynamic(
 		widgetLightBackgroundColor,
 		widgetDarkBackgroundColor
 	)
-	widget.setPadding(5, 5, 5, 5)
+	widget.setPadding(paddingCoefficient * .4 + 4, 5, 0, 5)
 
 	let mainFont = Font.body()
 
@@ -215,10 +192,11 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 	let previousActivity = null
 	let lineCount = 0
 	for (let i of activities) {
+		let startDate = new Date(i.start)
+		let finishDate = new Date(i.finish)
+
 		let sessionCount = 0
 		for (let session of i.sessions) {
-			let startDate = new Date(i.start)
-			let finishDate = new Date(i.finish)
 
 			let eventFinished = finishDate <= currentDate
 
@@ -236,7 +214,14 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		let lineColor = Color.dynamic(lineDefaultColorLight, lineDefaultColorDark)
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
 
+		let rollMarked = i.sessions.some(e => e.rollMarked)
+		if (widgetConfig.showMarkedRolls && !rollMarked) {
+			line.borderWidth = 3
+			line.borderColor = lineDefaultBorderColor
+		}
+
 		let eventName = extractClassCode(i.name)
+		console.log(`Extracted class code:" ${eventName}`)
 		if (eventName in widgetConfig.customisations.mappings) {
 			let template = widgetConfig.customisations.templates[widgetConfig.customisations.mappings[eventName]]
 			if (template !== undefined) {
@@ -256,8 +241,8 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		}
 
 		line.backgroundColor = lineBackgroundColor
-		line.setPadding(6, 11, 6, 13)
-		line.cornerRadius = 15
+		line.setPadding(2 + 18 / paddingCoefficient, 8 + paddingCoefficient, 2 + 18 / paddingCoefficient, 8 + paddingCoefficient)
+		line.cornerRadius = 30 - paddingCoefficient
 
 		if (i.activityId) {
 				line.url = `https://${Compass.fqdn}/Organise/Activities/Activity.aspx?targetUserId=${widgetConfig.userId}#activity/${i.activityId}`
@@ -565,7 +550,7 @@ function parseAndFilterCalendarResponse(response) {
 		
 		let isCancelled = activity.runningStatus === 0
 
-		let changedExpr = /<strike>(.*)<\/strike>&nbsp (.*)/
+		let changedExpr = /<strike>(.*)<\/strike>&nbsp; (.*)/
 
 		// if the event title has a hyphen it will trip up the splitter, so fix it up here
 		if (titleElements[0] !== activity.title) {
@@ -625,7 +610,8 @@ function parseAndFilterCalendarResponse(response) {
 					},
 					isCancelled
 				}
-			]
+			],
+			rollMarked: activity.rollMarked,
 		}
 	})
 	let timeMaps = results
@@ -649,7 +635,7 @@ function parseAndFilterCalendarResponse(response) {
 		const firstend = new Date(first[3])
 		const secondstart = new Date(second[2])
 		// The difference in time in minutes
-		const gap = (secondstart - firstend) / 60
+		const gap = (secondstart - firstend) / 60000
 
 		if (widgetConfig.doubleThresholdMinutes >= gap) {
 			// Must move the sessions if they are named and timed similarly
