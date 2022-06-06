@@ -208,7 +208,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		}
 
 		let rollMarked = i.sessions.some(e => e.rollMarked)
-		if (showMarkedRolls && rollMarked) {
+		if (widgetConfig.showMarkedRolls && !rollMarked) {
 			line.borderWidth = 5
 			line.borderColor = lineDefaultBorderColor
 		}
