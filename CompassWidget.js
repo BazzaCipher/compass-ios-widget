@@ -207,18 +207,18 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 			sessionCount++
 		}
 
-		let rollMarked = i.sessions.some(e => e.rollMarked)
-		if (widgetConfig.showMarkedRolls && !rollMarked) {
-			line.borderWidth = 5
-			line.borderColor = lineDefaultBorderColor
-		}
-
 		if (sessionCount === 0) continue
 
 		let line = widget.addStack()
 		let lineBackgroundColor = Color.dynamic(lineDefaultBackgroundColorLight, lineDefaultBackgroundColorDark)
 		let lineColor = Color.dynamic(lineDefaultColorLight, lineDefaultColorDark)
 		let lineAccentColor = Color.dynamic(lineDefaultAccentColorLight, lineDefaultAccentColorDark)
+
+		let rollMarked = i.sessions.some(e => e.rollMarked)
+		if (widgetConfig.showMarkedRolls && !rollMarked) {
+			line.borderWidth = 3
+			line.borderColor = lineDefaultBorderColor
+		}
 
 		let eventName = extractClassCode(i.name)
 		console.log(`Extracted class code:" ${eventName}`)
@@ -610,7 +610,8 @@ function parseAndFilterCalendarResponse(response) {
 					},
 					isCancelled
 				}
-			]
+			],
+			rollMarked: activity.rollMarked,
 		}
 	})
 	let timeMaps = results
