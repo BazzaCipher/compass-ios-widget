@@ -15,7 +15,7 @@ let widgetConfig = {
 	// whether to show events that have been cancelled
 	showCancelledEvents: false,
 	// whether if rolls were marked
-	showMarkedRolls: false,
+	showMarkedRolls: true,
 	// whether to show events which have already finished
 	showElapsedEvents: true,
 	// which types of events to show
@@ -208,7 +208,7 @@ function createWidget(activities, offlineDataModificationTime = null, isOfflineA
 		}
 
 		let rollMarked = i.sessions.some(e => e.rollMarked)
-		if (rollMarked) {
+		if (showMarkedRolls && rollMarked) {
 			line.borderWidth = 5
 			line.borderColor = lineDefaultBorderColor
 		}
